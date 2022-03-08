@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'parties',
     'purchase',
     'sales',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
