@@ -14,7 +14,12 @@ def hs_code_list(request):
         return JsonResponse(serializer.data, safe=False)
 
     if request.method=='POST':
-        pass
+        hs_code = JSONParser().parse(request)
+        serializer = HSCodeSerializers(data=hs_code)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
 
 
 @csrf_exempt
@@ -25,7 +30,13 @@ def product_variant_list(request):
         return JsonResponse(serializer.data, safe=False)
 
     if request.method=='POST':
-        pass
+        variant = JSONParser().parse(request)
+        serializer = ProductVariantSerializers(data=variant)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
 
 
 @csrf_exempt
@@ -36,4 +47,9 @@ def product_list(request):
         return JsonResponse(serializer.data, safe=False)
 
     if request.method=='POST':
-        pass
+        product = JSONParser().parse(request)
+        serializer = ProductSerializers(data=product)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
