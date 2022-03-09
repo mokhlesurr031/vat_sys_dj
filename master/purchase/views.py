@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 
-
+@csrf_exempt
 def purchase_list(request):
     if request.method == 'GET':
         purchase_inv = PurchaseInvoice.objects.all()
