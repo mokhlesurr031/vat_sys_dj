@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 
-
+@csrf_exempt
 def parties_list(request):
     if request.method=='GET':
         parties = Parties.objects.all()
@@ -23,12 +23,14 @@ def parties_list(request):
         return JsonResponse(serializer.errors, status=400)
 
 
-
+@csrf_exempt
 def customers_list(request):
     customers = Parties.objects.filter(is_customer=True)
     serializer = PartiesSerializers(customers, many=True)
     return JsonResponse(serializer.data, safe=False)
 
+
+@csrf_exempt
 def vendors_list(request):
     vendors = Parties.objects.filter(is_vendor=True)
     serializer = PartiesSerializers(vendors, many=True)

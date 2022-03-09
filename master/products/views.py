@@ -6,6 +6,7 @@ from rest_framework.parsers import JSONParser
 from django.views.decorators.csrf import csrf_exempt
 
 
+@csrf_exempt
 def hs_code_list(request):
     if request.method=='GET':
         hs_code = HSCode.objects.all()
@@ -16,7 +17,7 @@ def hs_code_list(request):
         pass
 
 
-
+@csrf_exempt
 def product_variant_list(request):
     if request.method=='GET':
         product_variant = ProductVariant.objects.all()
@@ -27,6 +28,7 @@ def product_variant_list(request):
         pass
 
 
+@csrf_exempt
 def product_list(request):
     if request.method=='GET':
         product = Product.objects.all()
