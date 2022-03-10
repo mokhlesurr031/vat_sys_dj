@@ -23,6 +23,7 @@ def purchase_list(request):
                 'order_deadline': str(pi.order_deadline),
                 'mobile': pi.mobile,
             }
+
             inv_line = PurchaseInvoiceLine.objects.filter(pi_id = pi.id)
             inl = {}
             for il in inv_line:
@@ -44,7 +45,10 @@ def purchase_list(request):
                 inl[il.product_id.name] = inv_line_data
             inv_data['vendor'] = [vendor_data]
             inv_data['products'] = [inl]
+
             final_output.append(inv_data)
+            inv_data = {}
+        print(final_output)
         return HttpResponse(json.dumps({'result': final_output}))
 
 
