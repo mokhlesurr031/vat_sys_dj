@@ -5,7 +5,8 @@ from .models import PurchaseInvoice, PurchaseInvoiceLine
 from .serializers import PurchaseInvoiceSerializers, PurchaseInvoiceLineSerializers
 from django.views.decorators.csrf import csrf_exempt
 import pdb
-import json 
+import json
+from products.models import Product
 
 
 
@@ -60,3 +61,32 @@ def purchase_list(request):
             serializer.save()
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
+
+
+@csrf_exempt
+def product_details_for_purchase(request, id):
+    if request.method=='POST':
+        prod_id = id
+        product_data = Product.objects.get(id=prod_id)
+
+        product_dict = {
+            'product_id': product_data.id,
+            'product_name': product_data.name,
+            'hs_code_id': product_data.product_category.hs_code.id,
+            'hs_code': product_data.product_category.hs_code.hs_code,
+            'product_variant_id': product_data.product_category.id,
+            'product_variant': product_data.product_category.name,
+            'product_type': product_data.product_type,
+            'uom': product_data.product_category.hs_code.uom,
+            'cd': product_data.product_category.hs_code.cd,
+            'sd': product_data.product_category.hs_code.sd,
+            'vat': product_data.product_category.hs_code.vat,
+            'ait': product_data.product_category.hs_code.ait,
+            'rd': product_data.product_category.hs_code.rd,
+            'atv': product_data.product_category.hs_code.atv,
+        }
+
+        json_prod_dict = json.dumps(product_dict)
+
+
+        return HttpResponse(json_prod_dict)
