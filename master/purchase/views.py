@@ -55,12 +55,19 @@ def purchase_list(request):
 
     if request.method=='POST':
         purchase = JSONParser().parse(request)
-        print(purchase)
-        serializer = PurchaseInvoiceSerializers(data=purchase)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+        vendor = purchase['result'][0]['vendor']
+        products = purchase['result'][0]['products']
+
+
+        print(vendor)
+        print(products)
+        # serializer = PurchaseInvoiceSerializers(data=purchase)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return JsonResponse(serializer.data, status=201)
+        # return JsonResponse(serializer.errors, status=400)
+
+        return HttpResponse(json.dumps({'success': 1}))
 
 
 @csrf_exempt
