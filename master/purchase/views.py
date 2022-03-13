@@ -55,17 +55,61 @@ def purchase_list(request):
 
     if request.method=='POST':
         purchase = JSONParser().parse(request)
+        print(purchase)
         vendor = purchase['result'][0]['vendor']
         products = purchase['result'][0]['products']
 
+        vendor_mobile = vendor['mobile']
+        vendor_email = vendor['email']
+        vendor_address = vendor['address']
+        vendor_order_deadline = vendor['order_deadline']
+        vendor_name = vendor['vendor']
 
-        print(vendor)
-        print(products)
-        # serializer = PurchaseInvoiceSerializers(data=purchase)
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     return JsonResponse(serializer.data, status=201)
-        # return JsonResponse(serializer.errors, status=400)
+
+        products_id = products['product_id']
+        products_name = products['product_name']
+        products_hs_code_id = products['hs_code_id']
+        products_hs_code = products['hs_code']
+        products_variant_id = products['product_variant_id']
+        products_variant = products['product_variant']
+        products_type = products['product_type']
+        products_uom = products['uom']
+        products_cd = products['cd']
+        products_sd = products['sd']
+        products_vat = products['vat']
+        products_ait = products['ait']
+        products_rd = products['rd']
+        products_atv = products['atv']
+        print('---------------------------------')
+
+        vendor_data = json.dumps({'vendor': vendor_name, 'email': vendor_email, 'address': vendor_address, 'order_deadline': vendor_order_deadline, 'mobile': vendor_mobile})
+        print(vendor_data)
+
+        # pi_id
+        # hs_code
+        # product_variant
+        # product_id
+        # product_type
+        # uom
+        # cd
+        # sd
+        # vat
+        # ait
+        # rd
+        # atv
+        # total
+        # remark
+
+        products_data = json.dumps({'hs_code': products_hs_code, 'product_variant': products_variant, 'product_id': products_id, 'product_type': products_type, 'uom': products_uom, 'cd':products_cd, 'sd': products_sd,
+                                    'vat': products_vat, 'ait': products_ait, 'rd': products_rd, 'atv': products_atv})
+
+        print('---------------------------------')
+        print(products_data)
+
+        print('---------------------------------')
+
+
+
 
         return HttpResponse(json.dumps({'success': 1}))
 
