@@ -23,6 +23,7 @@ class HSCode(models.Model):
     ait = models.FloatField(default=0)
     rd = models.FloatField(default=0)
     atv = models.FloatField(default=0)
+    tti = models.FloatField(default=0)
 
     def __str__(self):
         return self.hs_code

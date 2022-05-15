@@ -18,6 +18,7 @@ class SaleInvoice(models.Model):
     order_deadline = models.DateField(auto_now_add=True, null=True)
     mobile = models.CharField(max_length=25, null=True)
     email = models.CharField(max_length=200, null=True)
+    invoice_amount = models.FloatField(default=0, null=True)
 
     # def __str__(self):
     #     return self.vendor
@@ -35,6 +36,8 @@ class SaleInvoiceLine(models.Model):
     ait = models.FloatField(default=0)
     rd = models.FloatField(default=0)
     atv = models.FloatField(default=0)
+    tti = models.FloatField(default=0)
+    tti_amount = models.FloatField(default=0)
     total = models.FloatField(default=0)
     remark = models.CharField(max_length=200)
 

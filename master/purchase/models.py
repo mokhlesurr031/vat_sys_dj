@@ -18,6 +18,8 @@ class PurchaseInvoice(models.Model):
     order_deadline = models.DateField(auto_now_add=True, null=True)
     mobile = models.CharField(max_length=25, null=True)
     email = models.CharField(max_length=200, null=True)
+    invoice_amount = models.FloatField(default=0, null=True)
+
 
     # def __str__(self):
     #     return self.vendor

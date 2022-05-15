@@ -19,11 +19,13 @@ def purchase_list(request):
         purchase_inv = PurchaseInvoice.objects.all()
         for pi in purchase_inv:
             vendor_data = {
+                'id': pi.id,
                 'vendor': pi.vendor.name,
                 'email': pi.email,
                 'address': pi.address,
                 'order_deadline': str(pi.order_deadline),
                 'mobile': pi.mobile,
+                'invoice_amount': pi.invoice_amount,
             }
 
             inv_line = PurchaseInvoiceLine.objects.filter(pi_id = pi.id)

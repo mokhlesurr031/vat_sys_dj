@@ -19,11 +19,13 @@ def sales_list(request):
         sales_inv = SaleInvoice.objects.all()
         for si in sales_inv:
             customer_data = {
+                'id': si.id,
                 'customer': si.customer.name,
                 'email': si.email,
                 'address': si.address,
                 'order_deadline': str(si.order_deadline),
                 'mobile': si.mobile,
+                'invoice_amount': si.invoice_amount,
             }
 
             inv_line = SaleInvoiceLine.objects.filter(si_id = si.id)
@@ -41,6 +43,8 @@ def sales_list(request):
                     'ait': il.ait,
                     'rd': il.rd,
                     'atv': il.atv,
+                    'tti': il.tti,
+                    'tti_amount': il.tti_amount,
                     'total': il.total,
                     'remark': il.remark,
                 }
@@ -56,6 +60,7 @@ def sales_list(request):
 
     if request.method=='POST':
         sales = eval(request.body)
+        print(sales)
         customer = sales['result'][0]['customer']
         products = sales['result'][0]['products']
 
@@ -93,7 +98,9 @@ def sales_list(request):
                 ait = prod['ait'],
                 rd = prod['rd'],
                 atv = prod['atv'],
-                total = 0,
+                tti = prod['tti'],
+                tti_amount = prod['tti_amount'],
+                total = prod['total_payable'],
                 remark= 'Holy Shit',
 
             )
@@ -122,6 +129,7 @@ def product_details_for_sales(request, id):
             'ait': product_data.product_category.hs_code.ait,
             'rd': product_data.product_category.hs_code.rd,
             'atv': product_data.product_category.hs_code.atv,
+            'tti': product_data.product_category.hs_code.tti,
         }
 
         json_prod_dict = json.dumps(product_dict)
