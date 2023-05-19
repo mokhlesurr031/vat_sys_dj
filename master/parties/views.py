@@ -16,9 +16,6 @@ def parties_list(request):
 
     if request.method=='POST':
         parties = JSONParser().parse(request)
-        print('------------')
-        print(parties)
-        print('------------')
         serializer = PartiesSerializers(data=parties)
         if serializer.is_valid():
             serializer.save()

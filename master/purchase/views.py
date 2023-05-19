@@ -13,6 +13,7 @@ from parties.models import Parties
 
 @csrf_exempt
 def purchase_list(request):
+    print("PURCHASE LIST")
     if request.method == 'GET':
         final_output = []
         inv_data = {}
@@ -105,6 +106,7 @@ def purchase_list(request):
 
 @csrf_exempt
 def product_details_for_purchase(request, id):
+    print("IDDDDD", id)
     if request.method=='POST':
         prod_id = id
         product_data = Product.objects.get(id=prod_id)
@@ -130,3 +132,66 @@ def product_details_for_purchase(request, id):
 
 
         return HttpResponse(json_prod_dict)
+
+
+
+from django.core import serializers
+
+@csrf_exempt
+def purchase_details(request, id):
+    if request.method == 'GET':
+        inv_id = id
+        try:
+            purchase_data = PurchaseInvoice.objects.get(id=inv_id)
+            purchase_data_details = PurchaseInvoiceLine.objects.filter(pi_id=inv_id)
+            
+            # Convert the Parties object to a JSON-serializable format
+            parties_data = serializers.serialize('json', [purchase_data.vendor])
+
+
+            # Construct the nested dictionary
+            data = {
+                'purchase_data': {
+                    'id': purchase_data.id,
+                    'invoice_total': 0,
+                    'address': purchase_data.address,
+                    'mobile': purchase_data.mobile,
+                    'email': purchase_data.email,
+                    'order_deadline': str(purchase_data.order_deadline),
+                    'vendor': purchase_data.vendor.name,
+                    # Add more fields as needed
+                },
+                'purchase_data_details': [
+                    {
+                        'id': detail.id,
+                        'hs_code': detail.hs_code,
+                        'product_variant': detail.product_variant.name,
+                        'product_id': detail.product_id.name if detail.product_id else None,
+                        'product_type': detail.product_type,
+                        'uom': detail.uom,
+                        'cd': detail.cd,
+                        'sd': detail.sd,
+                        'vat': detail.vat,
+                        'ait': detail.ait,
+                        'rd': detail.rd,
+                        'atv': detail.atv,
+                        'total': detail.total,
+                        'remark': detail.remark,
+                    }
+                    for detail in purchase_data_details
+                ]
+            }
+
+            invoice_total = 0
+            for i in data['purchase_data_details']:
+                invoice_total+=i['total']
+            data['purchase_data']['invoice_total'] = invoice_total
+            return JsonResponse(data)
+
+        except PurchaseInvoice.DoesNotExist:
+            data = {'error': 'Purchase invoice not found'}
+            return HttpResponse(json.dumps(data), status=404)
+
+        except Exception as e:
+            data = {'error': str(e)}
+            return HttpResponse(json.dumps(data), status=500)

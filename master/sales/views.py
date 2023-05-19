@@ -58,11 +58,15 @@ def sales_list(request):
         return HttpResponse(json.dumps({'result': final_output}))
 
 
+
+
     if request.method=='POST':
         sales = eval(request.body)
-        print(sales)
         customer = sales['result'][0]['customer']
         products = sales['result'][0]['products']
+
+        print("Customer: ", customer)
+        print("PRODUCTS: ", products)
 
         customer_mobile = customer['mobile']
         customer_email = customer['email']
@@ -83,8 +87,13 @@ def sales_list(request):
             customer_id = customer_id,
         )
         si_id = si.id
+        print("SI ID", type(si_id))
+
 
         for prod in products:
+            print("===========")
+            print(prod)
+            print("++++++++++++")
             SaleInvoiceLine.objects.create(
                 si_id_id = si_id,
                 hs_code=prod['hs_code'],
@@ -98,9 +107,9 @@ def sales_list(request):
                 ait = prod['ait'],
                 rd = prod['rd'],
                 atv = prod['atv'],
-                tti = prod['tti'],
-                tti_amount = prod['tti_amount'],
-                total = prod['total_payable'],
+                # tti = prod['tti'],
+                tti_amount = 0,
+                total = 0,
                 remark= 'Holy Shit',
 
             )
@@ -135,3 +144,67 @@ def product_details_for_sales(request, id):
         json_prod_dict = json.dumps(product_dict)
 
         return HttpResponse(json_prod_dict)
+
+
+from django.core import serializers
+
+@csrf_exempt
+def sales_details(request, id):
+    if request.method == 'GET':
+        inv_id = id
+        try:
+            sales_data = SaleInvoice.objects.get(id=inv_id)
+            sales_data_details = SaleInvoiceLine.objects.filter(si_id=inv_id)
+            
+            # Convert the Parties object to a JSON-serializable format
+            parties_data = serializers.serialize('json', [sales_data.customer])
+
+
+            # Construct the nested dictionary
+            data = {
+                'sales_data': {
+                    'id': sales_data.id,
+                    'invoice_total': 0,
+                    'address': sales_data.address,
+                    'mobile': sales_data.mobile,
+                    'email': sales_data.email,
+                    'order_deadline': str(sales_data.order_deadline),
+                    'customer': sales_data.customer.name,
+                    # Add more fields as needed
+                },
+                'sales_data_details': [
+                    {
+                        'id': detail.id,
+                        'hs_code': detail.hs_code,
+                        'product_variant': detail.product_variant.name,
+                        'product_id': detail.product_id.name if detail.product_id else None,
+                        'product_type': detail.product_type,
+                        'uom': detail.uom,
+                        'cd': detail.cd,
+                        'sd': detail.sd,
+                        'vat': detail.vat,
+                        'ait': detail.ait,
+                        'rd': detail.rd,
+                        'atv': detail.atv,
+                        'total': detail.total,
+                        'remark': detail.remark,
+                    }
+                    for detail in sales_data_details
+                ]
+            }
+
+            invoice_total = 0
+            for i in data['sales_data_details']:
+                invoice_total+=i['total']
+            data['sales_data']['invoice_total'] = invoice_total
+            print(invoice_total)
+            print("+++++++++++++++++++++++++")
+            return JsonResponse(data)
+
+        except SaleInvoice.DoesNotExist:
+            data = {'error': 'Sales invoice not found'}
+            return HttpResponse(json.dumps(data), status=404)
+
+        except Exception as e:
+            data = {'error': str(e)}
+            return HttpResponse(json.dumps(data), status=500)
