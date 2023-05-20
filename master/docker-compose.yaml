@@ -1,0 +1,11 @@
+version: '3.1'
+
+services:
+  app:
+    image: mokhlesur96/dj:f921e5448c784094994dcee3441e81664bfb1c37
+    container_name: py-depl
+    build:
+      context: .
+    ports:
+      - 8000:8000
+    restart: always

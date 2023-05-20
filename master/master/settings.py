@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'index',
     'corsheaders',
+    'vat_calculation',
 ]
 
 MIDDLEWARE = [

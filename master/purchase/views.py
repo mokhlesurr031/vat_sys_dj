@@ -44,6 +44,8 @@ def purchase_list(request):
                     'ait': il.ait,
                     'rd': il.rd,
                     'atv': il.atv,
+                    'tti': il.tti,
+                    'tti_amount': il.tti_amount,
                     'total': il.total,
                     'remark': il.remark,
                 }
@@ -59,6 +61,7 @@ def purchase_list(request):
 
     if request.method=='POST':
         purchase = eval(request.body)
+        print("++++++++++ppppp", purchase)
         vendor = purchase['result'][0]['vendor']
         products = purchase['result'][0]['products']
 
@@ -83,6 +86,8 @@ def purchase_list(request):
         pi_id = pi.id
 
         for prod in products:
+            print(prod)
+            print(prod['total'])
             PurchaseInvoiceLine.objects.create(
                 pi_id_id = pi_id,
                 hs_code=prod['hs_code'],
@@ -96,8 +101,11 @@ def purchase_list(request):
                 ait = prod['ait'],
                 rd = prod['rd'],
                 atv = prod['atv'],
-                total = 0,
-                remark= 'Holy Shit',
+                total = prod['total'],
+                tti = prod['tti'],
+                total_payable = prod['total_payable'],
+                tti_amount = prod['tti_amount'],
+                remark= 'Remark',
 
             )
 

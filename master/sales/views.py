@@ -65,9 +65,6 @@ def sales_list(request):
         customer = sales['result'][0]['customer']
         products = sales['result'][0]['products']
 
-        print("Customer: ", customer)
-        print("PRODUCTS: ", products)
-
         customer_mobile = customer['mobile']
         customer_email = customer['email']
         customer_address = customer['address']
@@ -87,13 +84,8 @@ def sales_list(request):
             customer_id = customer_id,
         )
         si_id = si.id
-        print("SI ID", type(si_id))
-
 
         for prod in products:
-            print("===========")
-            print(prod)
-            print("++++++++++++")
             SaleInvoiceLine.objects.create(
                 si_id_id = si_id,
                 hs_code=prod['hs_code'],
@@ -107,10 +99,11 @@ def sales_list(request):
                 ait = prod['ait'],
                 rd = prod['rd'],
                 atv = prod['atv'],
-                # tti = prod['tti'],
-                tti_amount = 0,
-                total = 0,
-                remark= 'Holy Shit',
+                total = prod['total'],
+                tti = prod['tti'],
+                total_payable = prod['total_payable'],
+                tti_amount = prod['tti_amount'],
+                remark= 'Remark',
 
             )
 
@@ -197,8 +190,6 @@ def sales_details(request, id):
             for i in data['sales_data_details']:
                 invoice_total+=i['total']
             data['sales_data']['invoice_total'] = invoice_total
-            print(invoice_total)
-            print("+++++++++++++++++++++++++")
             return JsonResponse(data)
 
         except SaleInvoice.DoesNotExist:

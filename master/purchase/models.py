@@ -37,7 +37,10 @@ class PurchaseInvoiceLine(models.Model):
     ait = models.FloatField(default=0)
     rd = models.FloatField(default=0)
     atv = models.FloatField(default=0)
+    tti = models.FloatField(default=0)
+    tti_amount = models.FloatField(default=0)
     total = models.FloatField(default=0)
+    total_payable = models.FloatField(default=0)
     remark = models.CharField(max_length=200)
 
     # def __str__(self):
